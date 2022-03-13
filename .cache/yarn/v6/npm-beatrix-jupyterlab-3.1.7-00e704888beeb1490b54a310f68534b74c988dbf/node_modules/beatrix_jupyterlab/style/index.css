@@ -1,0 +1,33 @@
+/**
+  Any CSS definition which requires an image should be created here.
+  This will ensure that Webpack picks the image up and bundles it into the
+  final build.
+ */
+.jp-WorkbenchIcon {
+  background-image: url('./images/workbench_512_color.png');
+  background-size: contain;
+}
+
+.jp-ExecutorIcon {
+  background-image: url('./images/executor.png');
+  background-size: contain;
+  opacity: 0.6;
+}
+
+.jp-PublishIcon {
+  background-image: url('./images/publish_icon.png');
+  background-size: contain;
+  opacity: 0.6;
+}
+
+.jp-VertexAIIcon {
+  background-image: url('./images/vertexai.png');
+  background-size: contain;
+  opacity: 0.6;
+}
+
+.jp-ActivityLogIcon {
+  background-image: url('./images/longops.png');
+  background-size: contain;
+  opacity: 0.6;
+}

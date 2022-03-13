@@ -1,0 +1,213 @@
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.StyledSelect = void 0;
+const core_1 = require("@material-ui/core");
+const icons_1 = require("@material-ui/icons");
+const React = __importStar(require("react"));
+const service_provider_1 = require("../../../service/service_provider");
+const utils_1 = require("../../../utils");
+const starter_queries_1 = require("../../utils/starter_queries");
+const widget_manager_1 = require("../../utils/widgetManager/widget_manager");
+const loading_panel_1 = __importDefault(require("../loading_panel"));
+const query_editor_tab_widget_1 = require("../query_editor/query_editor_tab/query_editor_tab_widget");
+const header_1 = require("../shared/header");
+const styles_1 = require("../shared/styles");
+const dataset_details_panel_1 = require("./dataset_details_panel");
+const details_panel_1 = require("./details_panel");
+const StyledMenuItem = core_1.withStyles({
+    root: {
+        color: 'var(--jp-ui-font-color1)',
+        backgroundColor: 'var(--jp-layout-color0)',
+        '&$selected': {
+            backgroundColor: 'var(--jp-layout-color2)',
+            '&:hover': {
+                backgroundColor: 'var(--jp-layout-color2)',
+            },
+        },
+        '&:hover': {
+            backgroundColor: 'var(--jp-layout-color2)',
+        },
+    },
+    selected: {},
+})(core_1.MenuItem);
+// TODO: style for dark mode. Currently the container is still constant white.
+exports.StyledSelect = core_1.withStyles({
+    root: {
+        marginLeft: '36px',
+        color: 'var(--jp-ui-font-color1)',
+    },
+    icon: {
+        color: 'var(--jp-ui-font-color1)',
+    },
+})(core_1.Select);
+class ModelDetailsPanel extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            hasLoaded: false,
+            isLoading: false,
+            panelIsLoading: false,
+            details: { details: {} },
+            rows: [],
+            currentRun: 0,
+            trainingRows: [],
+            loadedRuns: {},
+        };
+    }
+    componentDidUpdate(prevProps) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const isFirstLoad = !(this.state.hasLoaded || prevProps.isVisible) && this.props.isVisible;
+            if (isFirstLoad) {
+                yield this.getDetails();
+                this.getTrainingRunDetails(this.state.details.details.training_runs.length - 1);
+            }
+        });
+    }
+    getDetails() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                this.setState({ isLoading: true });
+                const details = yield service_provider_1.ServiceProvider.bigQueryService.listModelDetails(this.props.modelId);
+                const detailsObj = details.details;
+                const rows = [
+                    { name: 'Model ID', value: detailsObj.id },
+                    { name: 'Date created', value: utils_1.formatDate(detailsObj.date_created) },
+                    {
+                        name: 'Model expiration',
+                        value: detailsObj.expires ? utils_1.formatDate(detailsObj.expires) : 'Never',
+                    },
+                    {
+                        name: 'Date modified',
+                        value: utils_1.formatDate(detailsObj.last_modified),
+                    },
+                    {
+                        name: 'Data location',
+                        value: detailsObj.location ? detailsObj.location : 'None',
+                    },
+                    {
+                        name: 'Model type',
+                        value: detailsObj.model_type,
+                    },
+                ];
+                this.setState({
+                    hasLoaded: true,
+                    details,
+                    rows,
+                    currentRun: detailsObj.training_runs.length - 1,
+                });
+            }
+            catch (err) {
+                utils_1.appLog.warn('Error retrieving model details', err);
+            }
+            finally {
+                this.setState({ isLoading: false });
+            }
+        });
+    }
+    optionDisplayName(option) {
+        if (option.length === 0)
+            return '';
+        const replace = option.replace(/([A-Z])/g, ' $1');
+        return replace.charAt(0).toUpperCase() + replace.slice(1);
+    }
+    optionDisplayValue(value) {
+        if (typeof value === 'boolean')
+            return value ? 'True' : 'False';
+        return value;
+    }
+    getTrainingRunDetails(runIndex) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                this.setState({ panelIsLoading: true });
+                if (!this.state.loadedRuns[runIndex]) {
+                    const details = yield service_provider_1.ServiceProvider.bigQueryService.getTrainingRunDetails(this.props.modelId, runIndex);
+                    const trainingRows = Object.entries(details.details).map(pair => {
+                        return {
+                            name: this.optionDisplayName(pair[0]),
+                            value: this.optionDisplayValue(pair[1]),
+                        };
+                    });
+                    const updatedRuns = Object.assign({}, this.state.loadedRuns);
+                    updatedRuns[runIndex] = trainingRows;
+                    this.setState({ loadedRuns: updatedRuns });
+                }
+            }
+            catch (err) {
+                utils_1.appLog.warn('Error retrieving model training run details', err);
+            }
+            finally {
+                this.setState({ panelIsLoading: false });
+            }
+        });
+    }
+    render() {
+        if (this.state.isLoading) {
+            return React.createElement(loading_panel_1.default, null);
+        }
+        else {
+            return (React.createElement("div", { className: dataset_details_panel_1.localStyles.container },
+                React.createElement(header_1.Header, null,
+                    React.createElement("div", null,
+                        this.props.modelName,
+                        this.state.details.details.training_runs &&
+                            this.state.details.details.training_runs.length > 1 ? (React.createElement(exports.StyledSelect, { value: this.state.currentRun, onChange: event => {
+                                this.setState({ currentRun: event.target.value });
+                                this.getTrainingRunDetails(event.target.value);
+                            }, disableUnderline: true }, this.state.details.details.training_runs &&
+                            this.state.details.details.training_runs.map((date, index) => {
+                                return (React.createElement(StyledMenuItem, { value: index, key: `training_run_${index}` },
+                                    index + 1,
+                                    " (",
+                                    utils_1.formatDate(date),
+                                    ")"));
+                            }))) : undefined),
+                    React.createElement(core_1.Button, { onClick: () => {
+                            const options = {
+                                widgetType: query_editor_tab_widget_1.QueryEditorTabWidget,
+                                windowType: 'main',
+                                widgetArgs: [
+                                    service_provider_1.ServiceProvider.bigQueryService,
+                                    starter_queries_1.getStarterQuery('MODEL', this.props.modelId),
+                                ],
+                            };
+                            widget_manager_1.WidgetManager.getInstance().launchWidget(options);
+                        }, startIcon: React.createElement(icons_1.Code, null), style: {
+                            textTransform: 'none',
+                            color: styles_1.gColor('BLUE'),
+                        } }, "Query model")),
+                React.createElement("div", { className: dataset_details_panel_1.localStyles.body }, this.state.panelIsLoading ? (React.createElement(loading_panel_1.default, null)) : (React.createElement(details_panel_1.DetailsPanel, { details: this.state.details.details, rows: this.state.rows, trainingRows: this.state.loadedRuns[this.state.currentRun], detailsType: "MODEL" })))));
+        }
+    }
+}
+exports.default = ModelDetailsPanel;

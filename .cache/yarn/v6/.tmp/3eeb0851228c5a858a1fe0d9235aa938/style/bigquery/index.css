@@ -1,0 +1,55 @@
+.jp-BigQueryIcon {
+  background-image: url('./images/bigquery.svg');
+  background-size: contain;
+}
+[data-jp-theme-light='false'] .jp-BigQueryIcon {
+  filter: invert(0.6);
+}
+
+.jp-DatasetIcon {
+  background-image: url('./images/dataset.svg');
+  background-size: contain;
+}
+[data-jp-theme-light='false'] .jp-DatasetIcon {
+  filter: invert(0.6);
+}
+
+.jp-EditorIcon {
+  background-image: url('./images/editor.svg');
+  background-size: contain;
+}
+[data-jp-theme-light='false'] .jp-EditorIcon {
+  filter: invert(0.6);
+}
+
+.jp-ModelIcon {
+  background-image: url('./images/model.svg');
+  background-size: contain;
+}
+[data-jp-theme-light='false'] .jp-ModelIcon {
+  filter: invert(0.6);
+}
+
+.jp-PartitionedTableIcon {
+  background-image: url('./images/table_partitioned.svg');
+  background-size: contain;
+}
+[data-jp-theme-light='false'] .jp-PartitionedTableIcon {
+  filter: invert(0.6);
+}
+
+.jp-TableIcon {
+  background-image: url('./images/table.svg');
+  background-size: contain;
+}
+[data-jp-theme-light='false'] .jp-TableIcon {
+  filter: invert(0.6);
+}
+
+.jp-ViewIcon {
+  background-image: url('./images/view.svg');
+  background-size: contain;
+}
+[data-jp-theme-light='false'] .jp-ViewIcon {
+  filter: invert(0.6);
+}

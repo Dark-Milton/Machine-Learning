@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "jupyter.lab.setting-icon-class": "jp-WorkbenchIcon",
+  "jupyter.lab.setting-icon-label": "Vertex Workbench",
+  "title": "Vertex Workbench",
+  "description": "Vertex Workbench Settings",
+  "type": "object",
+  "properties": {
+    "projectId": {
+      "type": "string",
+      "title": "Google Cloud project identifier",
+      "description": "Google Cloud project identifier"
+    },
+    "gcsBucket": {
+      "type": "string",
+      "title": "GCS Bucket path",
+      "description": "GCS Bucket path where Notebooks will be written to"
+    },
+    "location": {
+      "type": "string",
+      "title": "Notebook location",
+      "description": "Location where the Notebook execution will be run."
+    },
+    "scaleTier": {
+      "type": "string",
+      "title": "Vertex Job Scale tier",
+      "description": "Scale tier used for the Vertex training job."
+    },
+    "masterType": {
+      "type": "string",
+      "title": "Vertex Job Machine type",
+      "description": "Machine type used for the Vertex training job."
+    },
+    "acceleratorType": {
+      "type": "string",
+      "title": "Vertex Job Accelerator type",
+      "description": "Accelerator type used for the Vertex training job."
+    },
+    "acceleratorCount": {
+      "type": "string",
+      "title": "Vertex Job Accelerator count",
+      "description": "Accelerator count used for the Vertex training job."
+    },
+    "scheduleType": {
+      "type": "string",
+      "title": "Vertex Job Accelerator schedule type",
+      "description": "Default schedule type used to show create form for 'single' or 'recurring' executions"
+    },
+    "environmentImage": {
+      "type": "string",
+      "title": "Environment image",
+      "description": "Docker container used in the Vertex training job."
+    },
+    "serviceAccount": {
+      "type": "string",
+      "title": "Service account",
+      "description": "Service account used to run the execution or trigger the execution from a schedule"
+    },
+    "network": {
+      "type": "string",
+      "title": "Network",
+      "description": "VPC network used when running the Execution"
+    }
+  }
+}

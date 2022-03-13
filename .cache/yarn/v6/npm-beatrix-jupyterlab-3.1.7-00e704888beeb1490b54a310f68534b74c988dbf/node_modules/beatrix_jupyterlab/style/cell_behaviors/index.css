@@ -1,0 +1,15 @@
+.jp-cellMenu-RunCellIcon {
+  background-image: url('./images/playCircle.svg');
+}
+.jp-cellMenu-MoveCellUpIcon {
+  background-image: url('./images/arrowUp.svg');
+}
+.jp-cellMenu-MoveCellDownIcon {
+  background-image: url('./images/arrowDown.svg');
+}
+.jp-cellMenu-DeleteCellIcon {
+  background-image: url('./images/trashCan.svg');
+}
+.jp-cellMenu-BigQueryIcon {
+  background-image: url('../bigquery/images/bigquery.svg');
+}
